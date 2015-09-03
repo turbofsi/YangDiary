@@ -9,6 +9,7 @@
 #import "RootController.h"
 #import "YangDiary.h"
 #import "NewEntryViewController.h"
+#import "YangTableViewCell.h"
 
 @interface RootController ()
 
@@ -48,13 +49,10 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellidentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellidentifier forIndexPath:indexPath];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellidentifier];
-    }
+    YangTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellidentifier forIndexPath:indexPath];
     
     YangDiary *entry = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = entry.body;
+    [cell configureCellForEntry:entry];
     
     return cell;
 }
@@ -77,6 +75,11 @@
     [coreDataStack saveContext];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    YangDiary *entry = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    return [YangTableViewCell heightForEntry:entry];
+    
+}
 
 #pragma mark - Fetch request and Fetched result
 
@@ -137,8 +140,6 @@
             break;
     }
 }
-
-
 
 
 #pragma mark - prepare for segue
